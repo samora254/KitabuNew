@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(210, 40%, 25%);
+  --muted: hsl(210, 40%, 95%);
+  --muted-foreground: hsl(215, 16%, 47%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 40%, 25%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(210, 40%, 25%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(210, 40%, 95%);
+  --secondary-foreground: hsl(210, 40%, 25%);
+  --accent: hsl(210, 40%, 95%);
+  --accent-foreground: hsl(210, 40%, 25%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(210, 40%, 25%);
+  --radius: 0.5rem;
+
+  /* Kitabu AI Custom Colors */
+  --edu-blue: hsl(207, 90%, 54%);
+  --success-mint: hsl(160, 84%, 60%);
+  --highlight-coral: hsl(0, 84%, 67%);
+  --soft-white: hsl(210, 17%, 98%);
+  --readable-dark: hsl(210, 29%, 24%);
+  --achievement-green: hsl(142, 71%, 45%);
+}
+
+.dark {
+  --background: hsl(222, 84%, 5%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(217, 32%, 17%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --popover: hsl(222, 84%, 5%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 84%, 5%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(217, 32%, 17%);
+  --input: hsl(217, 32%, 17%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(217, 32%, 17%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --accent: hsl(217, 32%, 17%);
+  --accent-foreground: hsl(210, 40%, 98%);
+  --destructive: hsl(0, 62%, 30%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(212, 12%, 84%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Custom utility classes for Kitabu AI */
+@layer utilities {
+  .text-edu-blue {
+    color: var(--edu-blue);
+  }
+  
+  .bg-edu-blue {
+    background-color: var(--edu-blue);
+  }
+  
+  .text-success-mint {
+    color: var(--success-mint);
+  }
+  
+  .bg-success-mint {
+    background-color: var(--success-mint);
+  }
+  
+  .text-highlight-coral {
+    color: var(--highlight-coral);
+  }
+  
+  .bg-highlight-coral {
+    background-color: var(--highlight-coral);
+  }
+  
+  .text-readable-dark {
+    color: var(--readable-dark);
+  }
+  
+  .bg-readable-dark {
+    background-color: var(--readable-dark);
+  }
+  
+  .text-achievement-green {
+    color: var(--achievement-green);
+  }
+  
+  .bg-achievement-green {
+    background-color: var(--achievement-green);
+  }
+  
+  .bg-soft-white {
+    background-color: var(--soft-white);
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  
+  .rotateY-180 {
+    transform: rotateY(180deg);
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+}
+
+/* Flashcard flip animations */
+.flashcard-container {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.flashcard-container.flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+/* Loading animations */
+@keyframes pulse-grow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-grow {
+  animation: pulse-grow 2s ease-in-out infinite;
+}
+
+/* Chat interface scrollbar */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: width 0.6s ease-in-out;
+}
+
+/* Voice chat indicator */
+@keyframes voice-pulse {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
+.voice-indicator {
+  animation: voice-pulse 0.8s ease-in-out infinite;
+}
+
+.voice-indicator:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.voice-indicator:nth-child(3) {
+  animation-delay: 0.2s;
+}
