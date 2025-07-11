@@ -1,7 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, requireAuth } from "./auth";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { 
   generateTutorResponse, 
   generateQuizQuestions, 
@@ -16,26 +18,31 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session middleware
+  const PostgresStore = connectPg(session);
+  app.use(session({
+    store: new PostgresStore({
+      conString: process.env.DATABASE_URL,
+      createTableIfMissing: true,
+    }),
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    },
+  }));
+
   // Auth middleware
-  await setupAuth(app);
+  setupAuth(app);
 
   // Seed initial data on startup
   await storage.seedInitialData();
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
   // Subject routes
-  app.get('/api/subjects', isAuthenticated, async (req, res) => {
+  app.get('/api/subjects', requireAuth, async (req, res) => {
     try {
       const subjects = await storage.getAllSubjects();
       res.json(subjects);
@@ -45,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/subjects/:id', isAuthenticated, async (req, res) => {
+  app.get('/api/subjects/:id', requireAuth, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const subject = await storage.getSubjectById(id);
@@ -60,7 +67,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Strand routes
-  app.get('/api/subjects/:subjectId/strands', isAuthenticated, async (req, res) => {
+  app.get('/api/subjects/:subjectId/strands', requireAuth, async (req, res) => {
     try {
       const subjectId = parseInt(req.params.subjectId);
       const strands = await storage.getStrandsBySubject(subjectId);
@@ -72,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Topic routes
-  app.get('/api/strands/:strandId/topics', isAuthenticated, async (req, res) => {
+  app.get('/api/strands/:strandId/topics', requireAuth, async (req, res) => {
     try {
       const strandId = parseInt(req.params.strandId);
       const topics = await storage.getTopicsByStrand(strandId);
@@ -84,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Flashcard routes
-  app.get('/api/topics/:topicId/flashcards', isAuthenticated, async (req: any, res) => {
+  app.get('/api/topics/:topicId/flashcards', requireAuth, async (req: any, res) => {
     try {
       const topicId = parseInt(req.params.topicId);
       const userId = req.user.claims.sub;
@@ -109,7 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/flashcards/:flashcardId/progress', isAuthenticated, async (req: any, res) => {
+  app.post('/api/flashcards/:flashcardId/progress', requireAuth, async (req: any, res) => {
     try {
       const flashcardId = parseInt(req.params.flashcardId);
       const userId = req.user.claims.sub;
@@ -124,7 +131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate flashcards using AI
-  app.post('/api/topics/:topicId/generate-flashcards', isAuthenticated, async (req, res) => {
+  app.post('/api/topics/:topicId/generate-flashcards', requireAuth, async (req, res) => {
     try {
       const topicId = parseInt(req.params.topicId);
       const { count = 5 } = req.body;
@@ -153,7 +160,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Quiz routes
-  app.get('/api/topics/:topicId/quizzes', isAuthenticated, async (req, res) => {
+  app.get('/api/topics/:topicId/quizzes', requireAuth, async (req, res) => {
     try {
       const topicId = parseInt(req.params.topicId);
       const quizzes = await storage.getQuizzesByTopic(topicId);
@@ -164,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/quizzes/:quizId', isAuthenticated, async (req, res) => {
+  app.get('/api/quizzes/:quizId', requireAuth, async (req, res) => {
     try {
       const quizId = parseInt(req.params.quizId);
       const quiz = await storage.getQuizById(quizId);
@@ -180,7 +187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/quizzes/:quizId/submit', isAuthenticated, async (req: any, res) => {
+  app.post('/api/quizzes/:quizId/submit', requireAuth, async (req: any, res) => {
     try {
       const quizId = parseInt(req.params.quizId);
       const userId = req.user.claims.sub;
@@ -215,7 +222,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Generate quiz questions using AI
-  app.post('/api/topics/:topicId/generate-quiz', isAuthenticated, async (req, res) => {
+  app.post('/api/topics/:topicId/generate-quiz', requireAuth, async (req, res) => {
     try {
       const topicId = parseInt(req.params.topicId);
       const { count = 5, difficulty = "medium" } = req.body;
@@ -244,7 +251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Homework routes
-  app.get('/api/topics/:topicId/homework', isAuthenticated, async (req, res) => {
+  app.get('/api/topics/:topicId/homework', requireAuth, async (req, res) => {
     try {
       const topicId = parseInt(req.params.topicId);
       const homework = await storage.getHomeworkByTopic(topicId);
@@ -255,7 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/homework/active', isAuthenticated, async (req: any, res) => {
+  app.get('/api/homework/active', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const homework = await storage.getActiveHomework(userId);
@@ -267,7 +274,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Progress routes
-  app.get('/api/progress', isAuthenticated, async (req: any, res) => {
+  app.get('/api/progress', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const progress = await storage.getUserProgress(userId);
@@ -279,7 +286,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/progress/subjects/:subjectId', isAuthenticated, async (req: any, res) => {
+  app.get('/api/progress/subjects/:subjectId', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const subjectId = parseInt(req.params.subjectId);
@@ -292,7 +299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat routes for Rafiki AI
-  app.get('/api/chat/sessions', isAuthenticated, async (req: any, res) => {
+  app.get('/api/chat/sessions', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const sessions = await storage.getUserChatSessions(userId);
@@ -303,7 +310,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/chat/sessions', isAuthenticated, async (req: any, res) => {
+  app.post('/api/chat/sessions', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const validatedData = createChatSessionSchema.parse(req.body);
@@ -351,7 +358,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/chat/sessions/:sessionId', isAuthenticated, async (req: any, res) => {
+  app.get('/api/chat/sessions/:sessionId', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const sessionId = parseInt(req.params.sessionId);
@@ -368,7 +375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/chat/sessions/:sessionId/messages', isAuthenticated, async (req: any, res) => {
+  app.post('/api/chat/sessions/:sessionId/messages', requireAuth, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const sessionId = parseInt(req.params.sessionId);
@@ -419,7 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Evaluate student answers using AI
-  app.post('/api/evaluate-answer', isAuthenticated, async (req, res) => {
+  app.post('/api/evaluate-answer', requireAuth, async (req, res) => {
     try {
       const { question, studentAnswer, correctAnswer, subject } = req.body;
       

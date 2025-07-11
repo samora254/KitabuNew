@@ -6,8 +6,9 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, MessageCircle, ClipboardList, BookOpen, TrendingUp, Star, Flame, GraduationCap, ChartLine } from "lucide-react";
+import { Brain, MessageCircle, ClipboardList, BookOpen, TrendingUp, Star, Flame, GraduationCap, ChartLine, GamepadIcon, Headphones, FileText } from "lucide-react";
 import { Link } from "wouter";
+import studentDashboardImage from "@assets/Student dashboard_1752251550707.jpg";
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -84,22 +85,28 @@ export default function Dashboard() {
   }) || [];
 
   return (
-    <div className="min-h-screen bg-soft-white">
+    <div className="min-h-screen bg-gray-50">
       <Navigation />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Welcome Section */}
+        {/* Welcome Header with Gradient Banner */}
         <div className="mb-8">
-          <div className="bg-gradient-to-r from-edu-blue to-blue-600 rounded-2xl p-6 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 rounded-2xl p-6 text-white relative overflow-hidden">
             <div className="relative z-10">
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, {firstName}! 👋</h1>
-              <p className="text-blue-100 mb-4">Ready to continue your learning journey with Rafiki?</p>
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                Homework is Easy and Fun! With Kitabu AI
+              </h1>
+              <p className="text-purple-100 mb-4">
+                Welcome back, {firstName}! Ready to continue your learning journey?
+              </p>
               <div className="flex items-center space-x-4">
-                <div className="bg-white/20 rounded-lg px-3 py-1">
-                  <span className="text-sm font-medium">Grade 8 CBC</span>
+                <div className="flex items-center space-x-2 bg-white/20 rounded-full px-3 py-1">
+                  <MessageCircle className="w-4 h-4" />
+                  <span className="text-sm">If You Need Help, Chat With us</span>
                 </div>
-                <div className="bg-achievement-green rounded-lg px-3 py-1">
-                  <span className="text-sm font-medium">Level {stats.currentLevel}</span>
+                <div className="flex items-center space-x-2 bg-white/20 rounded-full px-3 py-1">
+                  <Star className="text-yellow-300" size={16} />
+                  <span className="text-sm">Level {stats.currentLevel}</span>
                 </div>
               </div>
             </div>
@@ -108,179 +115,118 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Learning Resources Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Brain Tease Flashcards */}
-          <Card className="hover:shadow-md transition-shadow cursor-pointer border-success-mint/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-success-mint/20 rounded-xl flex items-center justify-center">
-                  <Brain className="text-success-mint" size={24} />
-                </div>
-                <span className="text-xs bg-success-mint/20 text-success-mint px-2 py-1 rounded-full font-medium">
-                  Available
-                </span>
-              </div>
-              <h3 className="text-lg font-semibold text-readable-dark mb-2">Brain Tease</h3>
-              <p className="text-gray-600 text-sm mb-4">Quick flashcards for revision and memory reinforcement</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Mathematics • Science</span>
-                <TrendingUp className="text-success-mint" size={16} />
-              </div>
-            </CardContent>
+          <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-2xl flex items-center justify-center">
+              <BookOpen className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2">E-Books</h3>
+            <p className="text-gray-600 text-sm">Digital textbooks for all subjects</p>
           </Card>
+          
+          <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-2xl flex items-center justify-center">
+              <Headphones className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2">Audio Books</h3>
+            <p className="text-gray-600 text-sm">Listen and learn on the go</p>
+          </Card>
+          
+          <Card className="text-center p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-2xl flex items-center justify-center">
+              <FileText className="w-8 h-8 text-purple-600" />
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2">Revision Papers</h3>
+            <p className="text-gray-600 text-sm">Past papers and practice tests</p>
+          </Card>
+        </div>
 
-          {/* Quiz Feature */}
-          <Link href="/subjects" className="block">
-            <Card className="hover:shadow-md transition-shadow cursor-pointer border-edu-blue/20">
+        {/* Subject Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Mathematics */}
+          <Link href="/subjects/1" className="block">
+            <Card className="bg-gradient-to-br from-red-400 to-pink-500 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-edu-blue/20 rounded-xl flex items-center justify-center">
-                    <BookOpen className="text-edu-blue" size={24} />
-                  </div>
-                  <span className="text-xs bg-highlight-coral/20 text-highlight-coral px-2 py-1 rounded-full font-medium">
-                    Ready
-                  </span>
-                </div>
-                <h3 className="text-lg font-semibold text-readable-dark mb-2">Subject Quizzes</h3>
-                <p className="text-gray-600 text-sm mb-4">Test your knowledge with subject-based questions</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">All Subjects</span>
-                  <TrendingUp className="text-edu-blue" size={16} />
-                </div>
+                <h3 className="text-xl font-bold mb-2">Mathematics</h3>
+                <p className="text-red-100 text-sm">Numbers, algebra, geometry & more</p>
               </CardContent>
             </Card>
           </Link>
 
-          {/* Homework Feature */}
-          <Card className="hover:shadow-md transition-shadow cursor-pointer border-highlight-coral/20">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-highlight-coral/20 rounded-xl flex items-center justify-center">
-                  <ClipboardList className="text-highlight-coral" size={24} />
-                </div>
-                <span className="text-xs bg-achievement-green/20 text-achievement-green px-2 py-1 rounded-full font-medium">
-                  {activeHomework?.length || 0} Available
-                </span>
-              </div>
-              <h3 className="text-lg font-semibold text-readable-dark mb-2">Homework</h3>
-              <p className="text-gray-600 text-sm mb-4">Exam-format questions assigned by your teachers</p>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Due Soon</span>
-                <TrendingUp className="text-highlight-coral" size={16} />
-              </div>
-            </CardContent>
-          </Card>
+          {/* English */}
+          <Link href="/subjects/2" className="block">
+            <Card className="bg-gradient-to-br from-green-400 to-teal-500 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-2">English</h3>
+                <p className="text-green-100 text-sm">Grammar, writing, comprehension</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Kiswahili */}
+          <Link href="/subjects/3" className="block">
+            <Card className="bg-gradient-to-br from-blue-400 to-purple-500 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-2">Kiswahili</h3>
+                <p className="text-blue-100 text-sm">Lugha, utamaduni, fasihi</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Science */}
+          <Link href="/subjects/4" className="block">
+            <Card className="bg-gradient-to-br from-orange-400 to-red-500 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-2">Science</h3>
+                <p className="text-orange-100 text-sm">Biology, chemistry, physics</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Social Studies */}
+          <Link href="/subjects/5" className="block">
+            <Card className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-bold mb-2">Social</h3>
+                <p className="text-yellow-100 text-sm">History, geography, civics</p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Play Quiz Mania */}
+          <Link href="/quiz" className="block">
+            <Card className="bg-gradient-to-br from-gray-700 to-gray-900 text-white hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+              <CardContent className="p-6 text-center">
+                <GamepadIcon className="w-8 h-8 mx-auto mb-2" />
+                <h3 className="text-xl font-bold mb-2">PLAY QUIZ MANIA</h3>
+                <p className="text-gray-300 text-sm">Test your knowledge</p>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
-        {/* Current Progress & Rafiki Chat Preview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Learning Progress */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-readable-dark">Current Progress</h3>
-                <Link href="/progress">
-                  <Button variant="ghost" size="sm" className="text-edu-blue hover:text-blue-600">
-                    View All
-                  </Button>
-                </Link>
-              </div>
-              
-              <div className="space-y-4">
-                {progressLoading ? (
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-2 bg-gray-200 rounded"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  subjectProgress.slice(0, 3).map((subject: any) => (
-                    <div key={subject.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center`} 
-                               style={{ backgroundColor: `${subject.iconColor}20` }}>
-                            <BookOpen size={16} style={{ color: subject.iconColor }} />
-                          </div>
-                          <span className="font-medium text-readable-dark">{subject.name}</span>
-                        </div>
-                        <span className="text-sm text-gray-600">{subject.percentage}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="h-2 rounded-full progress-bar" 
-                          style={{ 
-                            width: `${subject.percentage}%`,
-                            backgroundColor: subject.percentage >= 70 ? 'var(--achievement-green)' : 'var(--edu-blue)'
-                          }}
-                        ></div>
-                      </div>
-                      <div className="mt-2 text-xs text-gray-500">
-                        {subject.completedTopics}/{subject.totalStrands} topics completed
-                        {subject.lastAccessed && (
-                          <span> • Last studied: {new Date(subject.lastAccessed).toLocaleDateString()}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Chat with Rafiki Preview */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-success-mint to-edu-blue rounded-full flex items-center justify-center">
-                    <MessageCircle className="text-white" size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-readable-dark">Rafiki AI Tutor</h3>
-                    <p className="text-sm text-success-mint">Online • Ready to help</p>
-                  </div>
+        {/* Help Chat Interface */}
+        <div className="mb-8">
+          <Card className="bg-white rounded-2xl shadow-sm">
+            <CardContent className="p-0">
+              <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-t-2xl">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <MessageCircle className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Need help solving a problem?"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
                 </div>
                 <Link href="/rafiki">
-                  <Button className="bg-edu-blue text-white hover:bg-blue-600">
-                    Start Chat
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6">
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Chat
                   </Button>
                 </Link>
-              </div>
-
-              {/* Recent Conversation Preview */}
-              <div className="space-y-3 mb-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-6 h-6 bg-success-mint rounded-full flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="text-white" size={12} />
-                  </div>
-                  <div className="bg-gray-100 rounded-lg p-3 max-w-xs">
-                    <p className="text-sm text-readable-dark">Hi {firstName}! Ready to tackle some problems today?</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 justify-end">
-                  <div className="bg-edu-blue rounded-lg p-3 max-w-xs">
-                    <p className="text-sm text-white">Yes! I need help with my studies.</p>
-                  </div>
-                  <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs">👤</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Voice Feature Preview */}
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                <MessageCircle className="text-success-mint" size={16} />
-                <span className="text-sm text-gray-600">Voice chat available</span>
-                <div className="flex space-x-1 ml-auto">
-                  <div className="w-1 h-3 bg-success-mint rounded-full voice-indicator"></div>
-                  <div className="w-1 h-2 bg-success-mint/60 rounded-full voice-indicator"></div>
-                  <div className="w-1 h-4 bg-success-mint rounded-full voice-indicator"></div>
-                </div>
               </div>
             </CardContent>
           </Card>

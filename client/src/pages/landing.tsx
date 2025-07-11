@@ -1,12 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Brain, MessageCircle, TrendingUp, Users, Shield } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
+  const [location, setLocation] = useLocation();
+
   return (
-    <div className="min-h-screen bg-soft-white">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-purple-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-edu-blue to-blue-600 text-white">
+      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -14,9 +17,9 @@ export default function Landing() {
                 <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                   <BookOpen className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-2xl font-bold">Kitabu AI</span>
+                <span className="text-2xl font-bold text-white">Kitabu AI</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white">
                 AI-Powered Learning for Grade 8 CBC
               </h1>
               <p className="text-xl text-blue-100 mb-8">
@@ -26,8 +29,8 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <Button 
                   size="lg" 
-                  className="bg-white text-edu-blue hover:bg-gray-100"
-                  onClick={() => window.location.href = '/api/login'}
+                  className="bg-white text-blue-600 hover:bg-blue-50 font-semibold"
+                  onClick={() => setLocation('/auth')}
                 >
                   Start Learning Now
                 </Button>
@@ -44,29 +47,29 @@ export default function Landing() {
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-success-mint rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
                       <MessageCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium">Chat with Rafiki AI</p>
+                      <p className="font-medium text-white">Chat with Rafiki AI</p>
                       <p className="text-sm text-blue-200">Get instant help with any subject</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-highlight-coral rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
                       <Brain className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium">Brain Tease Flashcards</p>
+                      <p className="font-medium text-white">Brain Tease Flashcards</p>
                       <p className="text-sm text-blue-200">Quick revision and memory boost</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-achievement-green rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
                       <TrendingUp className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium">Track Your Progress</p>
+                      <p className="font-medium text-white">Track Your Progress</p>
                       <p className="text-sm text-blue-200">Unlock new topics as you learn</p>
                     </div>
                   </div>

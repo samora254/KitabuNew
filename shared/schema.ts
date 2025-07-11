@@ -31,6 +31,7 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  password: varchar("password"),
   grade: varchar("grade").default("8"),
   totalXp: integer("total_xp").default(0),
   currentLevel: integer("current_level").default(1),
